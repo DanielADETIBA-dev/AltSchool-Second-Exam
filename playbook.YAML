@@ -1,0 +1,20 @@
+---
+- name: Execute Bash script on Slave and create a cron job
+  hosts: "Slave"
+  become: yes  
+
+  tasks:
+    - name: Execute the Bash script
+      script: /vagrant/Script.sh
+      register: script_result
+
+    - name: Debug script execution result
+      debug:
+        var: script_result.stdout
+
+    - name: Create a cron job for server uptime check
+      cron:
+        name: "Server Uptime Check"
+        minute: 0
+        hour: 0
+        job: "uptime >> /var/www/html/uptime_log.txt"
